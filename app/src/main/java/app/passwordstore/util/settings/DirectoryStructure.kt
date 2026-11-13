@@ -12,7 +12,8 @@ import java.nio.file.Paths
 enum class DirectoryStructure(val value: String) {
   EncryptedUsername("encrypted_username"), // work/example.org.gpg
   FileBased("file"), // work/example.org/jon@doe.org.gpg
-  DirectoryBased("directory"); // work/example.org/jon@doe.org/password.gpg
+  DirectoryBased("directory"), // work/example.org/jon@doe.org/password.gpg
+  Flat("flat"); // work/example.org/username.gpg, raw contents filled into focused field
 
   /**
    * Returns path string with at most two parent dir levels for [file] [DirectoryStructure].
@@ -69,7 +70,8 @@ enum class DirectoryStructure(val value: String) {
       else null // no-match
     } else {
       when (this) { // current directory structure setting as fallback for missing origin
-        EncryptedUsername -> null
+        EncryptedUsername,
+        Flat -> null
         FileBased -> passFile.nameWithoutExtension
         DirectoryBased -> passFile.parentFile?.name ?: passFile.nameWithoutExtension
       }
@@ -93,7 +95,8 @@ enum class DirectoryStructure(val value: String) {
   fun getIdentifierFor(file: File): String? =
     when (this) {
       EncryptedUsername -> file.nameWithoutExtension
-      FileBased -> file.parentFile?.name ?: file.nameWithoutExtension
+      FileBased,
+      Flat -> file.parentFile?.name ?: file.nameWithoutExtension
       DirectoryBased -> file.parentFile?.parent
     }
 
@@ -112,7 +115,8 @@ enum class DirectoryStructure(val value: String) {
   fun getPathToIdentifierFor(file: File): String? =
     when (this) {
       EncryptedUsername -> file.parent
-      FileBased -> file.parentFile?.parent
+      FileBased,
+      Flat -> file.parentFile?.parent
       DirectoryBased -> file.parentFile?.parentFile?.parent
     }
 
@@ -133,7 +137,8 @@ enum class DirectoryStructure(val value: String) {
   fun getAccountPartFor(file: File): String? =
     when (this) {
       EncryptedUsername -> null
-      FileBased -> file.nameWithoutExtension.takeIf { file.parentFile != null }
+      FileBased,
+      Flat -> file.nameWithoutExtension.takeIf { file.parentFile != null }
       DirectoryBased ->
         file.parentFile?.let { parentFile -> "${parentFile.name}/${file.nameWithoutExtension}" }
           ?: file.nameWithoutExtension
@@ -142,7 +147,8 @@ enum class DirectoryStructure(val value: String) {
   fun getSaveFolderName(identifier: String, username: CharArray?) =
     when (this) {
       EncryptedUsername -> "/"
-      FileBased -> identifier
+      FileBased,
+      Flat -> identifier
       DirectoryBased -> Paths.get(identifier, username?.let { String(it) } ?: "username").toString()
     }
 
@@ -150,7 +156,8 @@ enum class DirectoryStructure(val value: String) {
     when (this) {
       EncryptedUsername -> identifier
       FileBased -> username?.let { String(it) }
-      DirectoryBased -> "password"
+      DirectoryBased,
+      Flat -> "password"
     }
 
   companion object {

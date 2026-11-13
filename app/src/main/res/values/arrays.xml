@@ -37,11 +37,13 @@
     <item>work/example.org(.gpg)</item>
     <item>work/example.org/john@doe.org(.gpg)</item>
     <item>work/example.org/john@doe.org/password(.gpg)</item>
+    <item>work/example.org/{username,password}(.gpg)</item>
   </string-array>
   <string-array name="directory_structure_values">
     <item>encrypted_username</item>
     <item>file</item>
     <item>directory</item>
+    <item>flat</item>
   </string-array>
   <string-array name="app_theme_options">
     <item>@string/pref_app_theme_value_light</item>

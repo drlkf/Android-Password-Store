@@ -548,7 +548,8 @@ class PasswordCreationActivity : BasePGPActivity() {
             DirectoryStructure.EncryptedUsername -> "${destinationFolder.pathString}/$editName.gpg"
             DirectoryStructure.FileBased ->
               "${destinationFolder.pathString}/${editUsername.concatToString().trim()}.gpg"
-            DirectoryStructure.DirectoryBased -> "${destinationFolder.pathString}/$editFilename.gpg"
+            DirectoryStructure.DirectoryBased,
+            DirectoryStructure.Flat -> "${destinationFolder.pathString}/$editFilename.gpg"
           }
       }
 

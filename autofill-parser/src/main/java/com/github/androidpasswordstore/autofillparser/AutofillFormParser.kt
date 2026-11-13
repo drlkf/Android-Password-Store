@@ -205,8 +205,14 @@ private constructor(
   public val scenario: AutofillScenario<AutofillId>,
   public val ignoredIds: List<AutofillId>,
   public val saveFlags: Int?,
+  private val focusedPassword: Boolean,
 ) {
   public companion object {
+    private const val BUNDLE_KEY_FOCUSED_PASSWORD = "focusedPassword"
+
+    public fun isPasswordFieldFocused(clientState: Bundle): Boolean =
+      clientState.getBoolean(BUNDLE_KEY_FOCUSED_PASSWORD)
+
     /** Returns a [FillableForm] if a login form could be detected in [structure]. */
     public fun parseAssistStructure(
       context: Context,
@@ -221,9 +227,14 @@ private constructor(
         form.scenario.map { it.autofillId },
         form.ignoredIds,
         form.saveFlags,
+        form.scenario.allPasswordFields.any { it.isFocused },
       )
     }
   }
 
-  public fun toClientState(): Bundle = scenario.toBundle().apply { putAll(formOrigin.toBundle()) }
+  public fun toClientState(): Bundle =
+    scenario.toBundle().apply {
+      putAll(formOrigin.toBundle())
+      putBoolean(BUNDLE_KEY_FOCUSED_PASSWORD, focusedPassword)
+    }
 }

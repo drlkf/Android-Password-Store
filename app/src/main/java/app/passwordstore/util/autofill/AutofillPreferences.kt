@@ -43,7 +43,12 @@ object AutofillPreferences {
     entry: PasswordEntry,
     origin: String?,
     directoryStructure: DirectoryStructure,
+    passwordFieldFocused: Boolean = false,
   ): Credentials {
+    if (directoryStructure == DirectoryStructure.Flat) {
+      return if (passwordFieldFocused) Credentials(null, entry.password, null)
+      else Credentials(entry.password, null, null)
+    }
     // Always give priority to a username stored in the encrypted extras
     val username =
       entry.username

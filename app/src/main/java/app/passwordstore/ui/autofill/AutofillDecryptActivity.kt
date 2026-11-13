@@ -30,6 +30,7 @@ import app.passwordstore.util.extensions.toCharArray
 import app.passwordstore.util.extensions.wipe
 import app.passwordstore.util.settings.PreferenceKeys
 import com.github.androidpasswordstore.autofillparser.AutofillAction
+import com.github.androidpasswordstore.autofillparser.FillableForm
 import com.github.androidpasswordstore.autofillparser.FormOrigin
 import com.github.michaelbull.result.getError
 import com.github.michaelbull.result.getOrThrow
@@ -130,6 +131,7 @@ class AutofillDecryptActivity : BasePGPActivity() {
             entry,
             origin,
             directoryStructure,
+            FillableForm.isPasswordFieldFocused(clientState),
           )
         val fillInDataset =
           AutofillResponseBuilder.makeFillInDataset(
